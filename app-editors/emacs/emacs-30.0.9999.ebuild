@@ -40,16 +40,19 @@ DESCRIPTION="The extensible, customizable, self-documenting real-time display ed
 HOMEPAGE="https://www.gnu.org/software/emacs/"
 
 LICENSE="GPL-3+ FDL-1.3+ BSD HPND MIT W3C unicode PSF-2"
-IUSE="acl alsa aqua athena cairo dbus dynamic-loading games gfile gif +gmp gpm gsettings gtk gui gzip-el harfbuzz imagemagick +inotify jit jpeg json kerberos lcms libxml2 livecd m17n-lib mailutils motif png selinux sound source sqlite ssl svg systemd +threads tiff toolkit-scroll-bars tree-sitter valgrind webp wide-int +X xattr Xaw3d xft +xpm xwidgets zlib"
+IUSE="acl alsa aqua athena cairo dbus dynamic-loading games gfile gif +gmp gpm gsettings gtk gui gzip-el harfbuzz imagemagick +inotify jit jpeg json kerberos lcms libxml2 livecd m17n-lib mailutils motif png selinux small-ja-dic sound source sqlite ssl svg systemd +threads tiff toolkit-scroll-bars tree-sitter valgrind webp wide-int +X xattr Xaw3d xft +xpm xwidgets zlib"
 
 X_DEPEND="x11-libs/libICE
 	x11-libs/libSM
 	x11-libs/libX11
+	x11-libs/libXcomposite
 	x11-libs/libXext
 	x11-libs/libXfixes
+	x11-libs/libXi
 	x11-libs/libXinerama
 	x11-libs/libXrandr
 	x11-libs/libxcb
+	x11-libs/xcb-util
 	x11-misc/xbitmaps
 	xpm? ( x11-libs/libXpm )
 	xft? (
@@ -178,6 +181,8 @@ src_prepare() {
 			|| die "Upstream version number changed to ${FULL_VERSION}"
 	fi
 
+	default
+
 	if use jit; then
 		find lisp -type f -name "*.elc" -delete || die
 
@@ -191,8 +196,6 @@ src_prepare() {
 			&& export LIBRARY_PATH=$("$(tc-getCC)" -print-search-dirs \
 				| sed -n '/^libraries:/{s:^[^/]*::;p}')
 	fi
-
-	default
 
 	# Fix filename reference in redirected man page
 	sed -i -e "/^\\.so/s/etags/&-${EMACS_SUFFIX}/" doc/man/ctags.1 || die
@@ -365,6 +368,7 @@ src_configure() {
 		$(use_with libxml2 xml2) \
 		$(use_with mailutils) \
 		$(use_with selinux) \
+		$(use_with small-ja-dic) \
 		$(use_with sqlite sqlite3) \
 		$(use_with ssl gnutls) \
 		$(use_with systemd libsystemd) \

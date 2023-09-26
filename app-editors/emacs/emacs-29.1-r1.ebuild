@@ -48,11 +48,14 @@ IUSE="acl alsa aqua athena cairo dbus dynamic-loading games gfile gif +gmp gpm g
 X_DEPEND="x11-libs/libICE
 	x11-libs/libSM
 	x11-libs/libX11
+	x11-libs/libXcomposite
 	x11-libs/libXext
 	x11-libs/libXfixes
+	x11-libs/libXi
 	x11-libs/libXinerama
 	x11-libs/libXrandr
 	x11-libs/libxcb
+	x11-libs/xcb-util
 	x11-misc/xbitmaps
 	xpm? ( x11-libs/libXpm )
 	xft? (

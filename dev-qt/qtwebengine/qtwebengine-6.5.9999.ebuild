@@ -113,10 +113,12 @@ qtwebengine_check-reqs() {
 	[[ ${MERGE_TYPE} == binary ]] && return
 
 	if is-flagq '-g?(gdb)?([1-9])'; then #307861
-		ewarn "Used CFLAGS/CXXFLAGS seem to enable debug info (-g or -ggdb),"
-		ewarn "which is non-trivial with ${PN}. May experience extended"
-		ewarn "compilation times and increased disk/memory usage. If run into"
-		ewarn "issues, please disable before reporting a bug."
+		ewarn
+		ewarn "Used CFLAGS/CXXFLAGS seem to enable debug info (-g or -ggdb), which"
+		ewarn "is non-trivial with ${PN}. May experience extended compilation"
+		ewarn "times, increased disk/memory usage, and potentially link failure."
+		ewarn
+		ewarn "If run into issues, please try disabling before reporting a bug."
 	fi
 
 	local CHECKREQS_DISK_BUILD=7G
@@ -211,7 +213,14 @@ src_configure() {
 		rtc_link_pipewire=true
 	)
 
-	use custom-cflags || strip-flags # fragile
+	if use !custom-cflags; then
+		strip-flags # fragile
+
+		if is-flagq '-g?(gdb)?([2-9])'; then #914475
+			replace-flags '-g?(gdb)?([2-9])' -g1
+			ewarn "-g2+/-ggdb* *FLAGS replaced with -g1 (enable USE=custom-cflags to keep)"
+		fi
+	fi
 
 	export NINJA NINJAFLAGS=$(get_NINJAOPTS)
 	[[ ${NINJA_VERBOSE^^} == OFF ]] || NINJAFLAGS+=" -v"

@@ -20,7 +20,7 @@ DESCRIPTION="Open-source version of Google Chrome web browser"
 HOMEPAGE="https://www.chromium.org/"
 PATCHSET="2"
 PATCHSET_NAME="chromium-116-patchset-${PATCHSET}"
-PATCHSET_PPC64="116.0.5845.140-1raptor0~deb12u1"
+PATCHSET_PPC64="117.0.5938.62-1raptor0~deb12u1"
 SRC_URI="https://commondatastorage.googleapis.com/chromium-browser-official/${P}.tar.xz
 	https://gitlab.com/Matt.Jolly/chromium-patches/-/archive/${PV}/chromium-patches-${PV}.tar.bz2
 	ppc64? (
@@ -628,6 +628,10 @@ src_prepare() {
 
 	if ! use system-zstd; then
 		keeplibs+=( third_party/zstd )
+	fi
+
+	if use libcxx; then
+		keeplibs+=( third_party/libc++ )
 	fi
 
 	# Arch-specific
